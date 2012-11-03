@@ -12,6 +12,7 @@
 //#define KITCHEN_CORE_LOCATION_ENABLED
 //#define KITCHEN_AV_ENABLED
 //#define KITCHEN_SYNC_ENABLED
+//#define KITCHEN_REGEX_ENABLED //need icu
 
 #import "kitchen_init.h"
 
@@ -39,6 +40,10 @@
 #import "KSyncService.h"
 #import "KSyncHandler.h"
 #import "KSyncUpdate.h"
+#endif
+
+#ifdef KITCHEN_REGEX_ENABLED
+#import "KRegex.h"
 #endif
 
 #import "UIImage+Extension.h"

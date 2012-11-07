@@ -13,7 +13,7 @@
     NSDictionary *_options;
 }
 
-+ (KApp *) sharedApp;
++ (KApp *) defaultApp;
 - (NSString *) resourcePath;
 - (NSString *) resourcePathFor:(NSString *) name;
 - (NSString *) documentPath;
@@ -21,5 +21,6 @@
 - (NSString *) tmpPath;
 - (id) option:(NSString *) keys;
 - (void) call:(NSString *) tel;
+- (NSString *) uniqueId;
 
 @end

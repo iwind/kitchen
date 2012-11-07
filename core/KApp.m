@@ -8,6 +8,7 @@
 
 #import "KApp.h"
 #import "KExtension.h"
+#import "KNetwork.h"
 
 @interface KApp ()
 
@@ -17,7 +18,7 @@
 
 static KApp *kApp;
 
-+ (KApp *) sharedApp {
++ (KApp *) defaultApp {
     if (kApp == nil) {
         kApp = [[KApp alloc] init];
     }
@@ -58,6 +59,11 @@ static KApp *kApp;
 - (void) call:(NSString *) tel {
     NSURL *url = [NSURL URLWithString:[@"telprompt://" stringByAppendingString:tel]]; 
     [[UIApplication  sharedApplication] openURL:url]; 
+}
+
+- (NSString *) uniqueId {
+    NSString *unique = [NSString stringWithFormat:@"kitchen_unique_%@", [[KNetwork defaultNetwork] macAddress]];
+    return [unique md5];
 }
 
 @end

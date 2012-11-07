@@ -36,6 +36,8 @@
 #import "KAudioPlayer.h"
 #import "KCamera.h"
 
+#import "KNetwork.h"
+
 #ifdef KITCHEN_SYNC_ENABLED
 #import "KSyncService.h"
 #import "KSyncHandler.h"

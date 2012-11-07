@@ -58,7 +58,7 @@
     [NSThread sleepForTimeInterval:5.0];
     
     //查询最后一条
-    NSString *updateURL = [[KApp sharedApp] option:@"notification.retrieve"];
+    NSString *updateURL = [[KApp defaultApp] option:@"notification.retrieve"];
     KApiRequest *req = [[KApiRequest alloc] initWithURLString:updateURL];
     for (NSString *key in _params) {
         [req setPostValue:[_params objectForKey:key] forKey:key];

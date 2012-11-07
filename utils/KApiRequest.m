@@ -71,7 +71,7 @@
 }
 
 - (id) initWithPath:(NSString *) path {
-    NSString *urlString = [NSString stringWithFormat:@"%@%@", [[KApp sharedApp] option:@"api.host"], path];
+    NSString *urlString = [NSString stringWithFormat:@"%@%@", [[KApp defaultApp] option:@"api.host"], path];
     if (self = [self initWithURLString:urlString]) {
         
     }
@@ -90,10 +90,12 @@
     if (self.responseString == nil || ![self.responseString isKindOfClass:[NSString class]]) {
         return nil;
     }
-    
-    SBJSON *jsonParser = [SBJSON new];
-    NSDictionary *dict = [jsonParser objectWithString:self.responseString error:NULL];
-    return [[KApiResponse alloc] initWithDictionary:dict];
+    if (self.responseStatusCode == 200) {
+        SBJSON *jsonParser = [SBJSON new];
+        NSDictionary *dict = [jsonParser objectWithString:self.responseString error:NULL];
+        return [[KApiResponse alloc] initWithDictionary:dict];
+    }
+    return [[KApiResponse alloc] initWithDictionary:[NSDictionary dictionary]];
 }
 
 - (UIImage *) responseImage {

@@ -34,7 +34,7 @@
 
 - (void) setup:(BOOL) force {
     _isReady = NO;
-    _dbPath = [[KApp sharedApp] documentPathFor:@"kitchen.sqlite"];
+    _dbPath = [[KApp defaultApp] documentPathFor:@"kitchen.sqlite"];
     
     //KLog(@"ready to setup database at %@", _dbPath);
     
@@ -44,7 +44,7 @@
         [fileManager removeItemAtPath:_dbPath error:nil];
     }
     if (![fileManager fileExistsAtPath:_dbPath]) {
-        NSString *resourcePath = [[KApp sharedApp] resourcePathFor:@"kitchen.sqlite"];
+        NSString *resourcePath = [[KApp defaultApp] resourcePathFor:@"kitchen.sqlite"];
         NSError *error;
         if (![fileManager copyItemAtPath:resourcePath toPath:_dbPath error:&error]) {
             
@@ -358,6 +358,9 @@
     if (index < 1) {
         KLog(@"KStatment 'bindStringAtParam:value:' undefined param:'%@'", param);
         return;
+    }
+    if (value == nil || ![value isKindOfClass:[NSString class]]) {
+        value = @"";
     }
     [self bindStringAtIndex:index value:value];
 }

@@ -65,7 +65,7 @@
         }
     }
     
-    NSString *apiURL = [[KApp sharedApp] option:@"sync.updates"];
+    NSString *apiURL = [[KApp defaultApp] option:@"sync.updates"];
     KApiRequest *req = [[KApiRequest alloc] initWithURLString:apiURL];
     for (NSString *requestParamName in _requestParams) {
         [req setPostValue:[_requestParams objectForKey:requestParamName] forKey:requestParamName];
@@ -180,7 +180,7 @@
     NSString *json = [updateObjects JSONFragment];
     
     //发送数据
-    NSString *apiURL = [[KApp sharedApp] option:@"sync.commit"];
+    NSString *apiURL = [[KApp defaultApp] option:@"sync.commit"];
     KApiRequest *req = [[KApiRequest alloc] initWithURLString:apiURL];
     for (NSString *requestParamName in _requestParams) {
         [req setPostValue:[_requestParams objectForKey:requestParamName] forKey:requestParamName];

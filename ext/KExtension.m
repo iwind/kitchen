@@ -322,3 +322,24 @@
 }
 
 @end
+
+@implementation NSURL (Kitchen)
+
+- (NSString *) param:(NSString *) name {
+    NSString *query = [self query];
+    if (query == nil || query.length == 0) {
+        return @"";
+    }
+    for (NSString *param in [query componentsSeparatedByString:@"&"]) {
+        NSRange range = [param rangeOfString:@"="];
+        if (range.location != NSNotFound) {
+            NSString *paramName = [param substringToIndex:range.location];
+            if ([paramName isEqualToString:name]) {
+                return [[param substringFromIndex:range.location + 1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            }
+        }
+    }
+    return @"";
+}
+
+@end

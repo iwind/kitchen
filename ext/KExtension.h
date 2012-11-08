@@ -114,3 +114,9 @@ typedef enum {
 - (NSString *) base64Encode;
 
 @end
+
+@interface NSURL (Kitchen)
+
+- (NSString *) param:(NSString *) name;
+
+@end

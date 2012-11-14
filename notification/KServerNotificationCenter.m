@@ -27,8 +27,13 @@
         _params = [NSMutableDictionary dictionary];
         _handlers = [NSMutableDictionary dictionary];
         _isStarted = NO;
+        _ttl = 10.0;
     }
     return self;
+}
+
+- (void) setTtl:(int) ttl {
+    _ttl = ttl;
 }
 
 - (void) addParam:(NSString *) param forKey:(NSString *) key {
@@ -50,12 +55,12 @@
 - (void) startInBackground {
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(serverNotificationCenterShouldUpdate:)]) {
         if (![self.delegate serverNotificationCenterShouldUpdate:self]) {
-            [NSThread sleepForTimeInterval:5.0];
+            [NSThread sleepForTimeInterval:_ttl];
             [self startInBackground];
             return;
         }
     }
-    [NSThread sleepForTimeInterval:5.0];
+    [NSThread sleepForTimeInterval:_ttl];
     
     //查询最后一条
     NSString *updateURL = [[KApp defaultApp] option:@"notification.retrieve"];

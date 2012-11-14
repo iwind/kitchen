@@ -7,6 +7,7 @@
 //
 
 #import "KCamera.h"
+#import "kitchen_util.h"
 
 #ifdef KITCHEN_CORE_MEDIA_ENABLED
 
@@ -48,7 +49,7 @@
     NSError *error = nil;
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:&error];
     if (!input) {
-        NSLog(@"ERROR: trying to open camera: %@", error);
+        KLog(@"ERROR: trying to open camera: %@", error);
     }
     [self.session addInput:input];
     

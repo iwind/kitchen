@@ -109,6 +109,7 @@
         }
     }];
     [req startAsynchronous];
+    req = nil;
 }
 
 /** 执行服务器上的更新 **/
@@ -233,6 +234,7 @@
     }];
     
     [req startAsynchronous];
+    req = nil;
 }
 
 - (int) version {

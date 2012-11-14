@@ -16,12 +16,14 @@
     NSMutableDictionary *_handlers;
     NSMutableDictionary *_params;
     BOOL _isStarted;
+    int _ttl;
 }
 
 @property (nonatomic) id <KServerNotificationCenterDelegate> delegate;
 
 + (id) defaultCenter;
 
+- (void) setTtl:(int) ttl;
 - (void) addParam:(NSString *) param forKey:(NSString *) key;
 - (void) registerHandler:(KServerNotificationHandler *) handler for:(int) templateId;
 - (void) start;

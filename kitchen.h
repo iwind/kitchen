@@ -20,6 +20,7 @@
 #import "KApp.h"
 #import "KSettings.h"
 
+/** utils **/
 #import "KRandom.h"
 #import "KApiRequest.h"
 #import "KCacheEngine.h"
@@ -28,6 +29,7 @@
 #import "KApiRequest.h"
 #import "KImageAnimation.h"
 
+/** controllers **/
 #import "KController.h"
 #import "KTabBarController.h"
 #import "KNavigationController.h"
@@ -48,9 +50,10 @@
 #import "KRegex.h"
 #endif
 
+/** extensions **/
 #import "UIImage+Extension.h"
-
 #import "KExtension.h"
+#import "KTableView.h"
 
 /** 3rd party libs **/
 #import "md5.h"

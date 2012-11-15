@@ -20,12 +20,31 @@
 @implementation KDb
 
 + (KDb *) defaultDb {
-    static NSString *KitchenDbKey = @"KitchenDbKey";
+    static NSString *KitchenDbKey = @"KitchenDbKeyUser";
+    
+    int userId = [[KApp defaultApp] userId];
+    NSMutableDictionary *dict = [[NSThread currentThread] threadDictionary];
+    KDb *instance = [dict objectForKey:KitchenDbKey];
+    if (instance != nil && instance.userId != userId) {
+        [instance close];
+        instance = nil;
+    }
+    
+    if (instance == nil) {
+        instance = [[self alloc] initWithUserId:userId];
+        [dict setObject:instance forKey:KitchenDbKey];
+    }
+    
+    return instance;
+}
+
++ (KDb *) systemDb {
+    static NSString *KitchenDbKey = @"KitchenDbKeySystem";
     
     NSMutableDictionary *dict = [[NSThread currentThread] threadDictionary];
     KDb *instance = [dict objectForKey:KitchenDbKey];
     if (instance == nil) {
-        instance = [[self alloc] init];
+        instance = [[self alloc] initWithUserId:-1];
         [dict setObject:instance forKey:KitchenDbKey];
     }
     
@@ -34,7 +53,15 @@
 
 - (void) setup:(BOOL) force {
     _isReady = NO;
-    _dbPath = [[KApp defaultApp] documentPathFor:@"kitchen.sqlite"];
+    
+    NSString *fileName;
+    if (_userId < 0) {
+        fileName = @"kitchen.db";
+    }
+    else {
+        fileName = [NSString stringWithFormat:@"kitchen%d.db", _userId];
+    }
+    _dbPath = [[KApp defaultApp] documentPathFor:fileName];
     
     //KLog(@"ready to setup database at %@", _dbPath);
     
@@ -79,6 +106,14 @@
 
 - (id) init {
     if (self = [super init]) {
+        
+    }
+    return self;
+}
+
+- (id) initWithUserId:(int) userId {
+    if (self = [self init]) {
+        _userId = userId;
         [self setup:NO];
     }
     return self;
@@ -125,6 +160,10 @@
 - (void) reload {
     [self close];
     [self setup:YES];
+}
+
+- (int) userId {
+    return _userId;
 }
 
 - (int) errorCode {

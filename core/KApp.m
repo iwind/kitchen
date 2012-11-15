@@ -26,7 +26,9 @@ static KApp *kApp;
 }
 
 - (id) init {
-    self = [super init];
+    if (self = [super init]) {
+        _userId = 0;
+    }
     return self;
 }
 
@@ -49,6 +51,10 @@ static KApp *kApp;
     return NSTemporaryDirectory();
 }
 
+- (NSString *) tmpPathFor:(NSString *) name {
+    return [NSString stringWithFormat:@"%@/%@", [self tmpPath], name];
+}
+
 - (id) option:(NSString *) keys {
     if (!_options) {
         _options = [NSDictionary dictionaryWithContentsOfFile:[self resourcePathFor:@"kitchen.plist"]];
@@ -62,8 +68,23 @@ static KApp *kApp;
 }
 
 - (NSString *) uniqueId {
-    NSString *unique = [NSString stringWithFormat:@"kitchen_unique_%@", [[KNetwork defaultNetwork] macAddress]];
-    return [unique md5];
+    if (_uniqueId == nil) {
+        NSString *unique = [NSString stringWithFormat:@"kitchen_unique_%@", [[KNetwork defaultNetwork] macAddress]];
+        _uniqueId = [unique md5];
+    }
+    return _uniqueId;
+}
+
+- (void) setUserId:(int) userId {
+    if (_userId != userId) {
+        _userId = userId;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:KAppUserChangedNotification object:[NSNumber numberWithInt:_userId]];
+    }
+}
+
+- (int) userId {
+    return _userId;
 }
 
 @end

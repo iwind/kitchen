@@ -14,16 +14,20 @@
 @interface KDb : NSObject {
     sqlite3 *_sqlite;
     BOOL _isReady;
+    int _userId;
     NSString *_dbPath;
 }
 
 + (KDb *) defaultDb;
++ (KDb *) systemDb;
 - (NSArray *) tableNames;
 - (BOOL) exec:(NSString *) sql;
 - (KStatement *) statement:(NSString *) sql, ...;
 - (sqlite3_int64) lastInsertId;
 - (void) close;
 - (void) reload;
+
+- (int) userId;
 
 - (int) errorCode;
 - (NSString *) errorMessage;

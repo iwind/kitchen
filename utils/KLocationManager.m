@@ -89,6 +89,10 @@
     self.isRunning = NO;
 }
 
+- (void) stopUpdatingHeading {
+    [_locationManager stopUpdatingHeading];
+}
+
 - (void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     if (newLocation.horizontalAccuracy < 0 || oldLocation.horizontalAccuracy < 0) {

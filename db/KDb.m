@@ -38,8 +38,8 @@
     return instance;
 }
 
-+ (KDb *) systemDb {
-    static NSString *KitchenDbKey = @"KitchenDbKeySystem";
++ (KDb *) sharedDb {
+    static NSString *KitchenDbKey = @"KitchenDbKeyShared";
     
     NSMutableDictionary *dict = [[NSThread currentThread] threadDictionary];
     KDb *instance = [dict objectForKey:KitchenDbKey];

@@ -20,6 +20,7 @@
 
 - (KAudioPlayer *) add:(KAudioPlayer *)player forKey:(NSString *) key;
 - (void) play:(NSString *) key;
+- (void) prepare:(NSString *) key;
 - (void) stop:(NSString *) key;
 - (void) remove:(NSString *) key;
 

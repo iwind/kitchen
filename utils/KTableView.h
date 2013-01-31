@@ -18,26 +18,31 @@ typedef enum {
 
 @protocol KTableViewPullingDelegate <NSObject>
 
-- (void) onPullingBeforeRelease:(KTableView *) tableView;
-- (void) onPullingWillRelease:(KTableView *) tableView;
-- (void) onPullingDidRelease:(KTableView *) tableView;
-- (void) onPullingDidUpdate:(KTableView *) tableView;
+@optional
+- (void) tableViewPullingHeaderBeforeRelease:(KTableView *) tableView;
+- (void) tableViewPullingHeaderWillRelease:(KTableView *) tableView;
+- (void) tableViewPullingHeaderDidRelease:(KTableView *) tableView;
+- (void) tableViewPullingHeaderDidUpdate:(KTableView *) tableView;
+- (void) tableViewPullingFooterBeforeRelease:(KTableView *) tableView;
+- (void) tableViewPullingFooterWillRelease:(KTableView *) tableView;
+- (void) tableViewPullingFooterDidRelease:(KTableView *) tableView;
+- (void) tableViewPullingFooterDidUpdate:(KTableView *) tableView;
 
 @end
 
 @interface KTableView : UITableView {
 @private
-    UIView <KTableViewPullingDelegate> *_pullingView;
-    id _pullingTarget;
-    SEL _pullingSelector;
+    UIView <KTableViewPullingDelegate> *_headerPullingView;
+    id _headerPullingTarget;
+    SEL _headerPullingSelector;
     
     KTableViewPullingState _pullingState;
 }
 
 @property (nonatomic) BOOL pullingChanged;
 
-- (void) setPullingView:(UIView <KTableViewPullingDelegate> *) pullingView;
-- (void) setPullingTarget:(id) target selector:(SEL) selector;
+- (void) setHeaderPullingView:(UIView <KTableViewPullingDelegate> *) pullingView;
+- (void) setHeaderPullingTarget:(id) target selector:(SEL) selector;
 - (void) pullingScrolling;
 - (void) pullingScrollEnd;
 - (void) pullingEnd;

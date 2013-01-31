@@ -40,6 +40,8 @@
 
 @optional
 - (BOOL) syncServiceShouldUpdate:(KSyncService *) syncService;
+- (BOOL) syncServiceShouldCommit:(KSyncService *) syncService;
+- (void) syncServiceWillExecUpdates:(KSyncService *) syncService;
 - (void) syncServiceDidUpdate:(KSyncService *) syncService;
 - (void) syncServiceDidCommit:(KSyncService *) syncService;
 

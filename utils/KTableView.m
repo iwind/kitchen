@@ -13,40 +13,46 @@
 
 @synthesize pullingChanged;
 
-- (void) setPullingView:(UIView <KTableViewPullingDelegate> *) pullingView {
-    if (_pullingView) {
-        [_pullingView removeFromSuperview];
+- (void) setHeaderPullingView:(UIView <KTableViewPullingDelegate> *) pullingView {
+    if (_headerPullingView) {
+        [_headerPullingView removeFromSuperview];
     }
-    _pullingView = pullingView;
-    [self insertSubview:_pullingView atIndex:0];
-    [_pullingView setPosition:CGPointMake(_pullingView.frame.origin.x, -_pullingView.frame.size.height)];
+    _headerPullingView = pullingView;
+    [self insertSubview:_headerPullingView atIndex:0];
+    [_headerPullingView setPosition:CGPointMake(_headerPullingView.frame.origin.x, -_headerPullingView.frame.size.height)];
     
-    if ([_pullingView respondsToSelector:@selector(onPullingBeforeRelease:)]) {
-        [_pullingView onPullingBeforeRelease:self];
+    if ([_headerPullingView respondsToSelector:@selector(tableViewPullingHeaderBeforeRelease::)]) {
+        [_headerPullingView tableViewPullingHeaderBeforeRelease:self];
     }
     
     _pullingState = KTableViewPullingStateBefore;
 }
 
-- (void) setPullingTarget:(id) target selector:(SEL) selector {
-    _pullingTarget = target;
-    _pullingSelector = selector;
+- (void) setHeaderPullingTarget:(id) target selector:(SEL) selector {
+    _headerPullingTarget = target;
+    _headerPullingSelector = selector;
 }
 
 - (void) pullingScrolling {
     if (self.dragging) {
-        if (self.contentOffset.y < -_pullingView.frame.size.height) {
+        if (self.contentOffset.y < -_headerPullingView.frame.size.height) {
             if (_pullingState != KTableViewPullingStateWill) {
                 _pullingState = KTableViewPullingStateWill;
-                [_pullingView removeAllSubviews];
-                [_pullingView onPullingWillRelease:self];
+                [_headerPullingView removeAllSubviews];
+                
+                if ([_headerPullingView respondsToSelector:@selector(tableViewPullingHeaderWillRelease:)]) {
+                    [_headerPullingView tableViewPullingHeaderWillRelease:self];
+                }
             }
         }
         else {
             if (_pullingState != KTableViewPullingStateBefore) {
                 _pullingState = KTableViewPullingStateBefore;
-                [_pullingView removeAllSubviews];
-                [_pullingView onPullingBeforeRelease:self];
+                [_headerPullingView removeAllSubviews];
+                
+                if ([_headerPullingView respondsToSelector:@selector(tableViewPullingHeaderBeforeRelease:)]) {
+                    [_headerPullingView tableViewPullingHeaderBeforeRelease:self];
+                }
             }
         }
     }
@@ -59,15 +65,18 @@
     }
     if (_pullingState != KTableViewPullingStateDid) {
         _pullingState = KTableViewPullingStateDid;
-        [self setContentInset:UIEdgeInsetsMake(_pullingView.frame.size.height, 0.0, 0.0, 0.0)];
-        [_pullingView removeAllSubviews];
-        [_pullingView onPullingDidRelease:self];
+        [self setContentInset:UIEdgeInsetsMake(_headerPullingView.frame.size.height, 0.0, 0.0, 0.0)];
+        [_headerPullingView removeAllSubviews];
+        
+        if ([_headerPullingView respondsToSelector:@selector(tableViewPullingHeaderDidRelease:)]) {
+            [_headerPullingView tableViewPullingHeaderDidRelease:self];
+        }
         
         //调用Updating
-        if (_pullingTarget != nil && [_pullingTarget respondsToSelector:_pullingSelector]) {
+        if (_headerPullingTarget != nil && [_headerPullingTarget respondsToSelector:_headerPullingSelector]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            [_pullingTarget performSelector:_pullingSelector withObject:self];
+            [_headerPullingTarget performSelector:_headerPullingSelector withObject:self];
 #pragma clang diagnostic pop
         }
         else {
@@ -78,7 +87,10 @@
 
 - (void) pullingEnd {
     [self setContentInset:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
-    [_pullingView onPullingDidUpdate:self];
+    
+    if ([_headerPullingView respondsToSelector:@selector(tableViewPullingHeaderDidUpdate:)]) {
+        [_headerPullingView tableViewPullingHeaderDidUpdate:self];
+    }
 }
 
 @end

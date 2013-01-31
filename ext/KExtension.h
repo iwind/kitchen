@@ -76,6 +76,9 @@ typedef enum {
 
 - (void) hideNavigationBar;
 - (void) showNavigationBar;
+- (void) showNavigationBar:(UIBarStyle) style;
+
+- (void) adjustViewForKeyboard:(UIView *) inputView;
 
 @end
 

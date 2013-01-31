@@ -14,6 +14,8 @@
 @interface KServerNotificationCenter : NSObject {
 @private
     NSMutableDictionary *_handlers;
+    KServerNotificationHandler *_defaultHandler;
+    
     NSMutableDictionary *_params;
     BOOL _isStarted;
     int _ttl;
@@ -26,6 +28,7 @@
 - (void) setTtl:(int) ttl;
 - (void) addParam:(NSString *) param forKey:(NSString *) key;
 - (void) registerHandler:(KServerNotificationHandler *) handler for:(int) templateId;
+- (void) registerDefaultHandler:(KServerNotificationHandler *) handler;
 - (void) start;
 @end
 

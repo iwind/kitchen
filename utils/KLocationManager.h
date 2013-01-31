@@ -33,6 +33,7 @@
 - (void) start;
 - (void) stop;
 - (void) stopUpdatingLocation;
+- (void) stopUpdatingHeading;
 
 @end
 

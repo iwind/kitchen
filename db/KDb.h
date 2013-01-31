@@ -19,7 +19,7 @@
 }
 
 + (KDb *) defaultDb;
-+ (KDb *) systemDb;
++ (KDb *) sharedDb;
 - (NSArray *) tableNames;
 - (BOOL) exec:(NSString *) sql;
 - (KStatement *) statement:(NSString *) sql, ...;

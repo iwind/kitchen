@@ -34,4 +34,7 @@
 - (void) setUserId:(int) userId;
 - (int) userId;
 
+- (BOOL) deviceSizeIs3_5;
+- (BOOL) deviceSizeIs4_0;
+
 @end

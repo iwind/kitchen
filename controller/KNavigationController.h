@@ -14,5 +14,6 @@
 
 + (void) setupInWindow:(UIWindow *) window;
 + (KNavigationController *) defaultController;
+- (UIViewController *) rootController;
 
 @end

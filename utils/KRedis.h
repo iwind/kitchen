@@ -14,19 +14,23 @@
 #import "hiredis.h"
 
 @class KRedisReply;
-@protocol KRedisSubscribeDelegate;
+@protocol KRedisDelegate;
 
 @interface KRedis : NSObject {
 @private
     redisContext * _context;
 	NSString *_host;
 	int _port;
-    
-    id <KRedisSubscribeDelegate> _subscribeDelegate;
+    NSString *_password;
+    NSTimeInterval _timeout;
 }
+
+@property (nonatomic, retain) NSObject <KRedisDelegate> *delegate;
 
 + (id) redisWithHost:(NSString *) host port:(int) port;
 
+- (void) setTimeout:(NSTimeInterval) timeout;
+- (void) setPassword:(NSString *) password;
 - (BOOL) connect;
 
 - (BOOL) isValid;
@@ -34,9 +38,8 @@
 - (KRedisReply *) command:(NSString *) command;
 
 - (BOOL) ping;
-- (BOOL) auth:(NSString *) password;
 - (int) publish:(NSString *) channel message:(NSString *) message;
-- (void) subscribe:(NSArray *) channels delegate:(id <KRedisSubscribeDelegate>) delegate;
+- (void) subscribe:(NSArray *) channels;
 
 - (void) close;
 
@@ -73,9 +76,12 @@ typedef enum {
 
 @end
 
-@protocol KRedisSubscribeDelegate <NSObject>
+@protocol KRedisDelegate <NSObject>
 
-- (void) redisSubscribeDidReplyChannel:(NSString *) channel messsage:(NSString *) message;
+@optional
+- (void) redisDidConnect:(KRedis *) redis;
+- (void) redisDidDisconnect:(KRedis *) redis;
+- (void) redisSubscribeDidReply:(KRedis *) redis channel:(NSString *) channel messsage:(NSString *) message;
 
 @end
 

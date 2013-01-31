@@ -9,6 +9,7 @@
 #import "KController.h"
 #import "KNavigationController.h"
 #import "KExtension.h"
+#import "KApp.h"
 
 @interface KController ()
 
@@ -72,6 +73,47 @@
     return _isFirstDisplay;
 }
 
+- (BOOL) isFirstUserDisplay {
+    return _isFirstUserDisplay;
+}
+
+/** 提示框 **/
+- (void) confirm:(NSString *) message callback:(void (^)(BOOL confirmed)) callback {
+    _confirmCallback = callback;
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"系统提示" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alertView.tag = 880001;
+    [alertView show];
+}
+
+- (void) alert:(NSString *) message callback:(void (^)()) callback {
+    _alertCallback = callback;
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"系统提示" message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    alertView.tag = 880002;
+    [alertView show];
+}
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 880001) {
+        if (buttonIndex == 0) {
+            if (_confirmCallback) {
+                _confirmCallback(NO);
+            }
+        }
+        else if (buttonIndex == 1) {
+            if (_confirmCallback) {
+                _confirmCallback(YES);
+            }
+        }
+    }
+    else if (alertView.tag == 880002) {
+        if (_alertCallback) {
+            _alertCallback();
+        }
+    }
+}
+
 #pragma mark Inherited methods
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -87,6 +129,7 @@
     [super viewDidDisappear:animated];
     [self onUnload];
     _isFirstDisplay = NO;
+    _isFirstUserDisplay = NO;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -100,9 +143,16 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     _isFirstDisplay = YES;
+    _isFirstUserDisplay = YES;
     [self onInit];
+    
+    //用户账户改变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doUserChangeDisplay:) name:KAppUserChangedNotification object:nil];
 }
 
+- (void) doUserChangeDisplay:(NSNotification *) notification {
+    _isFirstUserDisplay = YES;
+}
 
 #pragma mark Old methods
 

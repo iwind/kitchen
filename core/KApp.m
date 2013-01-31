@@ -87,4 +87,14 @@ static KApp *kApp;
     return _userId;
 }
 
+- (BOOL) deviceSizeIs3_5 {
+    UIScreen *screen = [UIScreen mainScreen];
+    return (screen.bounds.size.height == 480.0);
+}
+
+- (BOOL) deviceSizeIs4_0 {
+    UIScreen *screen = [UIScreen mainScreen];
+    return (screen.bounds.size.height == 568.0);
+}
+
 @end

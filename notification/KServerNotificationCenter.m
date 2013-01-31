@@ -44,6 +44,10 @@
     [_handlers setObject:handler forKey:[NSNumber numberWithInt:templateId]];
 }
 
+- (void) registerDefaultHandler:(KServerNotificationHandler *) handler {
+    _defaultHandler = handler;
+}
+
 - (void) start {
     if (_isStarted) {
         return;
@@ -68,14 +72,18 @@
     for (NSString *key in _params) {
         [req setPostValue:[_params objectForKey:key] forKey:key];
     }
+    KApiRequest *blockReq = req;
     [req setCompletionBlock:^{
-        KApiResponse *response = req.responseApi;
+        KApiResponse *response = blockReq.responseApi;
         if (response.code == 200) {
             NSDictionary *info = response.data;
             int templateId = [info intForPath:@"template_id"];
             
             //是否有处理器
             KServerNotificationHandler *handler = [_handlers objectForKey:[NSNumber numberWithInt:templateId]];
+            if (handler == nil) {
+                handler = _defaultHandler;
+            }
             if (handler != nil) {
                 KServerNotification *notice = [[KServerNotification alloc] init];
                 [notice setSenderId:[info intForPath:@"rock_uid"]];

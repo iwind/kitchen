@@ -229,6 +229,22 @@
     self.navigationController.navigationBar.hidden = NO;
 }
 
+- (void) showNavigationBar:(UIBarStyle) style {
+    self.navigationController.navigationBar.hidden = NO;
+    self.navigationController.navigationBar.barStyle = style;
+}
+
+- (void) adjustViewForKeyboard:(UIView *) inputView {
+    int keyboardHeight = 240.0;
+    CGPoint location = [self.view convertPoint:CGPointMake(0.0, 0.0) fromView:inputView];
+    float diff = location.y + inputView.frame.size.height + keyboardHeight - self.view.frame.size.height;
+    if (diff > 0) {
+        [UIView animateWithDuration:0.2 animations:^{
+            [self.view setPosition:CGPointMake(0.0, -diff)];
+        }];
+    }
+}
+
 @end
 
 @implementation NSString (Kitchen)

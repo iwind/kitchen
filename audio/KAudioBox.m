@@ -35,6 +35,10 @@
 	[[self playerForKey:key] play];
 }
 
+- (void) prepare:(NSString *) key {
+    [[self playerForKey:key] prepareToPlay];
+}
+
 - (void) play {
     for (KAudioPlayer *player in [players allValues]) {
 		if (![player isPlaying]) {

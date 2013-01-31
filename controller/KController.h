@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface KController : UIViewController {
+@interface KController : UIViewController <UIAlertViewDelegate> {
 @private
     UIView *_lastView;//上一次插入的视图
     NSMutableDictionary *_params;
     BOOL _isFirstDisplay;
+    BOOL _isFirstUserDisplay;
+    
+    void (^_confirmCallback) (BOOL isConfirmed);
+    void (^_alertCallback)();
 }
 
 /** 视图切换 **/
@@ -27,5 +31,10 @@
 
 /** 其他 **/
 - (BOOL) isFirstDisplay;
+- (BOOL) isFirstUserDisplay;
+
+/** 提示框 **/
+- (void) confirm:(NSString *) message callback:(void (^)(BOOL confirmed)) callback;
+- (void) alert:(NSString *) message callback:(void (^)()) callback;
 
 @end

@@ -29,6 +29,10 @@ static KNavigationController *defaultController;
     return defaultController;
 }
 
+- (UIViewController *) rootController {
+    return [self.viewControllers objectAtIndex:0];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self onInit];

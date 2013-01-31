@@ -71,11 +71,13 @@
         [req setPostValue:[_requestParams objectForKey:requestParamName] forKey:requestParamName];
     }
     [req setPostInt:[self version] forKey:@"version"];
-    
+    KApiRequest *blockReq = req;
     [req setCompletionBlock:^{
-        if (req.responseApi.code == SUCCESS) {
+        KApiResponse *response = blockReq.responseApi;
+        
+        if (response.code == SUCCESS) {
             //执行
-            NSArray *updates = [req.responseApi data:@"updates"];
+            NSArray *updates = [response data:@"updates"];
             NSMutableArray *updatesArray = [[NSMutableArray alloc] init];
             for (NSDictionary *updateDictionary in updates) {
                 KSyncUpdate *update = [[KSyncUpdate alloc] initWithDictionary:updateDictionary];
@@ -85,12 +87,12 @@
             
             //更新版本
             KSettings *settings = [KSettings defaultSettings];
-            NSNumber *versionNumber = [req.responseApi data:@"version"];
+            NSNumber *versionNumber = [response data:@"version"];
             [settings updateValue:[versionNumber stringValue] forKey:@"sync_version"];
             [settings updateValue:[NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]] forKey:@"sync_updated_at"];
         }
         else {
-            KLog(@"KSynService failed to updating, response code:%d", req.responseApi.code);
+            KLog(@"KSynService failed to updating, response code:%d", response.code);
         }
         
         _isUpdating = NO;
@@ -116,6 +118,10 @@
 - (void) exec:(NSArray *) updates {
     if (updates.count == 0) {
         return;
+    }
+    
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(syncServiceWillExecUpdates:)]) {
+        [self.delegate performSelectorInBackground:@selector(syncServiceWillExecUpdates:) withObject:self];
     }
     
     for (KSyncUpdate *update in updates) {
@@ -151,7 +157,7 @@
     _isCommitting = YES;
     
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(syncServiceShouldUpdate:)]) {
-        if (![self.delegate syncServiceShouldUpdate:self]) {
+        if (![self.delegate syncServiceShouldCommit:self]) {
             _isCommitting = NO;
             
             //调用Delegate
@@ -188,12 +194,12 @@
     }
     [req setPostInt:[self version] forKey:@"version"];
     [req setPostValue:json forKey:@"updates"];
-    
+    KApiRequest *blockReq = req;
     [req setCompletionBlock:^{
         //更新版本
-        if (req.responseApi.code == SUCCESS) {
+        if (blockReq.responseApi.code == SUCCESS) {
             KSettings *settings = [KSettings defaultSettings];
-            NSNumber *versionNumber = [req.responseApi data:@"version"];
+            NSNumber *versionNumber = [blockReq.responseApi data:@"version"];
             [settings updateValue:[versionNumber stringValue] forKey:@"sync_version"];
             [settings updateValue:[NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]] forKey:@"sync_committed_at"];
             
@@ -214,7 +220,7 @@
             }
         }
         else {
-            KLog(@"KSynService failed to committing, response code:%d", req.responseApi.code);
+            KLog(@"KSynService failed to committing, response code:%d", blockReq.responseApi.code);
         }
         
         _isCommitting = NO;

@@ -12,7 +12,10 @@
     NSString *_version;
 }
 
+@property (nonatomic) BOOL isShared;
+
 + (id) defaultSettings;
++ (id) sharedSettings;
 
 - (NSString *) version;
 - (NSComparisonResult) compareVersion:(NSString *) version;

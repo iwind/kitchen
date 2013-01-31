@@ -8,19 +8,58 @@
 
 #import "KRedis.h"
 #import "kitchen_util.h"
+#import "Reachability.h"
 
 #ifdef KITCHEN_REDIS_ENABLED
 
 @implementation KRedis
+
+@synthesize delegate;
 
 + (id) redisWithHost:(NSString *) host port:(int) port {
     id redis = [[self alloc] initWithHost:host port:port];
     return redis;
 }
 
+- (void) setTimeout:(NSTimeInterval) timeout {
+    _timeout = timeout;
+}
+
+- (void) setPassword:(NSString *) password {
+    _password = password;
+}
+
 - (BOOL) connect {
+    if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
+        [NSThread sleepForTimeInterval:10.0];
+        [self responseError];
+        return NO;
+    }
+    
+    if (_context != NULL) {
+        redisFree(_context);
+        _context = NULL;
+    }
     _context = redisConnect([_host UTF8String], _port);
-    return (_context->err == 0);
+    BOOL r = (_context->err == 0);
+    if (r) {
+        if (_timeout > 0.0) {
+            struct timeval timeout;
+            timeout.tv_sec = (long)_timeout;
+            timeout.tv_usec = 0;
+            redisSetTimeout(_context, timeout);
+        }
+        if (_password) {
+            [self auth];
+        }
+        if (self.delegate && [self.delegate respondsToSelector:@selector(redisDidConnect:)]) {
+            [self.delegate redisDidConnect:self];
+        }
+    }
+    else {
+        [self responseError];
+    }
+    return r;
 }
 
 - (id) initWithHost:(NSString *) host port:(int) port {
@@ -28,21 +67,25 @@
         _host = host;
         _port = port;
         _context = NULL;
+        _timeout = 0.0;
+        _password = nil;
     }
     return self;
 }
 
 - (BOOL) isValid {
     if (_context == NULL) {
-		return [self connect];
+		return NO;
 	}
     if (!(_context->flags & REDIS_CONNECTED)) {
 		redisFree(_context);
-		return [self connect];
+        _context = NULL;
+		return NO;
 	}
     if (_context->err != 0) {
 		redisFree(_context);
-		return [self connect];
+        _context = NULL;
+		return NO;
 	}
 	return YES;
 }
@@ -52,6 +95,9 @@
         return nil;
     }
 	redisReply *response = redisCommand(_context, [command UTF8String]);
+    if (response == NULL) {
+        return nil;
+    }
 	KRedisReply *reply = [[KRedisReply alloc] initWithReply:response];
     return reply;
 }
@@ -61,8 +107,8 @@
     return (reply.type == KRedisReplyTypeStatus && [reply.statusValue isEqualToString:@"PONG"]);
 }
 
-- (BOOL) auth:(NSString *) password {
-    KRedisReply *reply = [self command:[NSString stringWithFormat:@"AUTH %@", password]];
+- (BOOL) auth {
+    KRedisReply *reply = [self command:[NSString stringWithFormat:@"AUTH %@", _password]];
     return (!reply.hasErrors);
 }
 
@@ -77,19 +123,21 @@
     return 0;
 }
 
-- (void) subscribe:(NSArray *) channels delegate:(id <KRedisSubscribeDelegate>) delegate {
-    _subscribeDelegate = delegate;
-    
-    [NSThread detachNewThreadSelector:@selector(subscribeInBackground:) toTarget:self withObject:channels];
-}
-
-- (void) subscribeInBackground:(NSArray *) channels {
+- (void) subscribe:(NSArray *) channels {
+    if (![self isValid]) {
+        [self responseError];
+        return;
+    }
     KRedisReply *reply = [self command:[NSString stringWithFormat:@"SUBSCRIBE %@", [channels componentsJoinedByString:@" "]]];
     if (reply.hasErrors) {
         return;
     }
     while (true) {
         NSArray *replies = [self receive];
+        if (replies.count == 0) {//出错误
+            [self responseError];
+            break;
+        }
         for (KRedisReply *singleReply in replies) {
             if (singleReply.type != KRedisReplyTypeArray) {
                 continue;
@@ -110,21 +158,36 @@
             if (channelReply.type != KRedisReplyTypeString || messageReply.type != KRedisReplyTypeString) {
                 continue;
             }
-            if (_subscribeDelegate != nil && [_subscribeDelegate respondsToSelector:@selector(redisSubscribeDidReplyChannel:messsage:)]) {
-                [_subscribeDelegate redisSubscribeDidReplyChannel:channelReply.stringValue messsage:messageReply.stringValue];
+            if (self.delegate != nil && [self.delegate respondsToSelector:@selector(redisSubscribeDidReply:channel:messsage:)]) {
+                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:channelReply.stringValue, @"channel", messageReply.stringValue, @"message", nil];
+                
+                [self performSelectorOnMainThread:@selector(responseChannel:) withObject:info waitUntilDone:NO];
+                //[self responseChannel:info];
             }
         }
+    }
+}
+
+- (void) responseChannel:(NSDictionary *) info {
+    NSString *channel = [info objectForKey:@"channel"];
+    NSString *message = [info objectForKey:@"message"];
+    [self.delegate redisSubscribeDidReply:self channel:channel messsage:message];
+}
+
+- (void) responseError {
+    [self close];
+    
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(redisDidDisconnect:)]) {
+        [self.delegate redisDidDisconnect:self];
     }
 }
 
 - (NSArray *) receive {
     void * aux = NULL;
 	NSMutableArray * replies = [[NSMutableArray alloc] init];
-	
     if (![self isValid]) {
         return replies;
     }
-    
 	if (redisGetReply(_context, &aux) == REDIS_ERR) {
         return replies;
     }
@@ -151,8 +214,10 @@
 }
 
 - (void) close {
-    redisFree(_context);
-	_context = NULL;
+    if (_context != NULL) {
+        redisFree(_context);
+        _context = NULL;
+    }
 }
 
 @end
@@ -220,7 +285,7 @@
 }
 
 - (void) dealloc {
-    [self free];
+    //[self free];
 }
 
 @end

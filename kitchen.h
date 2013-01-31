@@ -13,6 +13,7 @@
 //#define KITCHEN_AV_ENABLED
 //#define KITCHEN_SYNC_ENABLED
 //#define KITCHEN_REGEX_ENABLED //need icu
+//#define KITCHEN_SERVER_NOTIFICATION_ENABLED
 
 #import "kitchen_init.h"
 
@@ -48,6 +49,12 @@
 
 #ifdef KITCHEN_REGEX_ENABLED
 #import "KRegex.h"
+#endif
+
+#ifdef KITCHEN_SERVER_NOTIFICATION_ENABLED
+#import "KServerNotification.h"
+#import "KServerNotificationCenter.h"
+#import "KServerNotificationHandler.h"
 #endif
 
 /** extensions **/

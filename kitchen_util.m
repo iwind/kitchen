@@ -25,7 +25,7 @@ CGPoint KGLCoordinate(CGRect rect, CGRect envRect) {
 }
 
 int KRand(int min, int max) {
-	return [KRandom randBetween:min and:max];
+	return [KRandom randBetweenMin:min max:max];
 }
 
 id o(id options, NSString *key) {

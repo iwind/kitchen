@@ -212,7 +212,7 @@
                     if (uc < 0x20) {
                         [json appendFormat:@"\\u%04x", uc];
                     } else {
-                        CFStringAppendCharacters((__bridge CFMutableStringRef)json, &uc, 1);
+                        CFStringAppendCharacters(( CFMutableStringRef)json, &uc, 1);
                     }
                     break;
                     

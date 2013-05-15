@@ -13,7 +13,7 @@
 
 @synthesize seed;
 
-+ (int)randBetween:(int)min and:(int) max {
++ (int)randBetweenMin:(int)min max:(int) max {
 	static KRandom *bkRandom;
 	if (bkRandom == nil) {
 		bkRandom = [self alloc];

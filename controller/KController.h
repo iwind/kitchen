@@ -17,6 +17,8 @@
     
     void (^_confirmCallback) (BOOL isConfirmed);
     void (^_alertCallback)();
+    
+    float _keyboardHeight;
 }
 
 /** 视图切换 **/
@@ -26,6 +28,7 @@
 - (void) setParams:(NSMutableDictionary *) params;
 - (void) setParam:(id) value forKey:(NSString *) key;
 - (NSMutableDictionary *) params;
+- (void) removeParam:(NSString *) key;
 - (id) param:(NSString *) path;
 - (int) paramInt:(NSString *) path;
 
@@ -36,5 +39,9 @@
 /** 提示框 **/
 - (void) confirm:(NSString *) message callback:(void (^)(BOOL confirmed)) callback;
 - (void) alert:(NSString *) message callback:(void (^)()) callback;
+
+/** 键盘 **/
+- (float) keyboardHeight;
+- (void) adjustViewForKeyboard:(UIView *) inputView;
 
 @end

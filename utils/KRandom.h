@@ -15,6 +15,6 @@
 
 @property (readwrite) int seed;
 
-+ (int)randBetween:(int)min and:(int) max;
++ (int)randBetweenMin:(int)min max:(int) max;
 
 @end

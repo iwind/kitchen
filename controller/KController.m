@@ -49,6 +49,10 @@
     return _params;
 }
 
+- (void) removeParam:(NSString *) key {
+    [_params removeObjectForKey:key];
+}
+
 /** read params for a path **/
 - (id) param:(NSString *) path {
     if (!_params) {
@@ -114,6 +118,38 @@
     }
 }
 
+/** 键盘 **/
+- (void) keyboardShow:(NSNotification *) notice {
+    CGRect rect = [[notice.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        _keyboardHeight = rect.size.height;
+    }
+    else {
+        _keyboardHeight = rect.size.width;
+    }
+    [self onKeyboardShow:_keyboardHeight];
+    
+}
+
+- (void) keyboardHide:(NSNotification *) notice {
+    _keyboardHeight = 0.0;
+    [self onKeyboardHide];
+}
+
+- (float) keyboardHeight {
+    return _keyboardHeight;
+}
+
+- (void) adjustViewForKeyboard:(UIView *) inputView {
+    CGPoint location = [self.view convertPoint:CGPointMake(0.0, 0.0) fromView:inputView];
+    float diff = location.y + inputView.frame.size.height + _keyboardHeight - self.view.frame.size.height;
+    if (diff > 0) {
+        [UIView animateWithDuration:0.2 animations:^{
+            [self.view setPosition:CGPointMake(0.0, -diff)];
+        }];
+    }
+}
+
 #pragma mark Inherited methods
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -123,6 +159,11 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self onLoad];
+    
+    //键盘事件
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (void) viewDidDisappear:(BOOL)animated {
@@ -130,6 +171,11 @@
     [self onUnload];
     _isFirstDisplay = NO;
     _isFirstUserDisplay = NO;
+    
+    //键盘事件
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -168,6 +214,10 @@
 
 - (BOOL)shouldAutorotate {
     return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

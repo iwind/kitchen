@@ -63,7 +63,7 @@
     }
     _dbPath = [[KApp defaultApp] documentPathFor:fileName];
     
-    //KLog(@"ready to setup database at %@", _dbPath);
+    KLog(@"ready to setup database at %@", _dbPath);
     
     //建立初始数据库
     NSFileManager *fileManager = [NSFileManager defaultManager];

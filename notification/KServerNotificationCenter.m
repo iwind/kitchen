@@ -98,7 +98,7 @@
                 
                 [notice setCreatedAt:[info intForPath:@"created_at"]];
                 
-                [handler performSelectorInBackground:@selector(handle:) withObject:notice];
+                [handler performSelectorOnMainThread:@selector(handle:) withObject:notice waitUntilDone:YES];
             }
         }
         

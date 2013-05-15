@@ -555,6 +555,7 @@ typedef void (^ASIDataBlock)(NSData *data);
 - (void)setStartedBlock:(ASIBasicBlock)aStartedBlock;
 - (void)setHeadersReceivedBlock:(ASIHeadersBlock)aReceivedBlock;
 - (void)setCompletionBlock:(ASIBasicBlock)aCompletionBlock;
+- (ASIBasicBlock)requestCompletionBlock;//@iwind
 - (void)setFailedBlock:(ASIBasicBlock)aFailedBlock;
 - (void)setBytesReceivedBlock:(ASIProgressBlock)aBytesReceivedBlock;
 - (void)setBytesSentBlock:(ASIProgressBlock)aBytesSentBlock;

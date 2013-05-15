@@ -52,6 +52,7 @@ typedef enum {
 /** get an object by a dotted path (example:a.b.c) **/
 - (id) objectForPath:(NSString *) path;
 - (int) intForPath:(NSString *) path;
+- (BOOL) boolForPath:(NSString *) path;
 - (NSString *) stringForPath:(NSString *) path;
 @end
 
@@ -65,6 +66,8 @@ typedef enum {
 - (void) onBefore;
 - (void) onLoad;
 - (void) onUnload;
+- (void) onKeyboardShow:(float) height;
+- (void) onKeyboardHide;
 
 /** set back button **/
 - (void) setBackButton:(UIBarButtonItem *)backButton;
@@ -77,8 +80,6 @@ typedef enum {
 - (void) hideNavigationBar;
 - (void) showNavigationBar;
 - (void) showNavigationBar:(UIBarStyle) style;
-
-- (void) adjustViewForKeyboard:(UIView *) inputView;
 
 @end
 

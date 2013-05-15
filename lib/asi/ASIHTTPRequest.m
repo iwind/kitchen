@@ -4943,6 +4943,10 @@ static NSOperationQueue *sharedQueue = nil;
 	completionBlock = [aCompletionBlock copy];
 }
 
+- (ASIBasicBlock)requestCompletionBlock {
+    return completionBlock;
+}
+
 - (void)setFailedBlock:(ASIBasicBlock)aFailedBlock
 {
 	[failureBlock release];

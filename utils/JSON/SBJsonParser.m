@@ -333,7 +333,7 @@ static char ctrl[0x22];
                     return NO;
                     break;
             }
-            CFStringAppendCharacters((__bridge CFMutableStringRef)*o, &uc, 1);
+            CFStringAppendCharacters(( CFMutableStringRef)*o, &uc, 1);
             c++;
             
         } else if (*c < 0x20) {

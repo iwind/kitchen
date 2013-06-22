@@ -37,6 +37,7 @@
 
 #import "KAudioBox.h"
 #import "KAudioPlayer.h"
+#import "KAudioRecorder.h"
 #import "KCamera.h"
 
 #import "KNetwork.h"

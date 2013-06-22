@@ -90,6 +90,17 @@
     }
 }
 
+- (void) quietClose {
+    if (_sockfd) {
+        return;
+    }
+    
+    amqp_connection_close(_connection, AMQP_REPLY_SUCCESS);
+    amqp_destroy_connection(_connection);
+    
+    _sockfd = -1;
+}
+
 - (BOOL) isConnected {
     return (_sockfd > 0);
 }

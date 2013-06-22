@@ -39,13 +39,7 @@
     if (self = [super init]) {
         self.isShared = _isShared;
         
-        [self setup];
-        
-        KStatement *stmt = [[self currentDb] statement:@"SELECT value FROM k_settings WHERE name='version' LIMIT 1"];
-        if ([stmt next]) {
-            _version = [stmt stringAtIndex:0];
-        }
-        [stmt free];
+        [self reload];
     }
     return self;
 }
@@ -136,6 +130,16 @@
 
 - (double) doubleForKey:(NSString *) key {
     return [[self stringForKey:key] doubleValue];
+}
+
+- (void) reload {
+    [self setup];
+    
+    KStatement *stmt = [[self currentDb] statement:@"SELECT value FROM k_settings WHERE name='version' LIMIT 1"];
+    if ([stmt next]) {
+        _version = [stmt stringAtIndex:0];
+    }
+    [stmt free];
 }
 
 @end

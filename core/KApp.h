@@ -36,5 +36,6 @@
 
 - (BOOL) deviceSizeIs3_5;
 - (BOOL) deviceSizeIs4_0;
+- (BOOL) deviceIsIOS7;
 
 @end

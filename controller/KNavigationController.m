@@ -69,9 +69,16 @@ static KNavigationController *defaultController;
     // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return [self.topViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+}
+
+- (BOOL)shouldAutorotate {
     return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return self.topViewController.supportedInterfaceOrientations;
 }
 
 

@@ -34,7 +34,6 @@
         instance = [[self alloc] initWithUserId:userId];
         [dict setObject:instance forKey:KitchenDbKey];
     }
-    
     return instance;
 }
 

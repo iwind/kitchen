@@ -97,4 +97,8 @@ static KApp *kApp;
     return (screen.bounds.size.height == 568.0);
 }
 
+- (BOOL) deviceIsIOS7 {
+    return ([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] != NSOrderedAscending);
+}
+
 @end

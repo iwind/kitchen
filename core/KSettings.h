@@ -27,4 +27,6 @@
 - (BOOL) boolForKey:(NSString *) key;
 - (double) doubleForKey:(NSString *) key;
 
+- (void) reload;
+
 @end

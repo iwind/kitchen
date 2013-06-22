@@ -26,6 +26,7 @@
 - (BOOL) connect;
 - (BOOL) reconnect;
 - (void) close;
+- (void) quietClose;//关闭连接，但不调用Delegate
 - (BOOL) isConnected;
 
 - (amqp_connection_state_t) nativeConnection;

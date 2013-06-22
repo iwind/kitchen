@@ -46,12 +46,14 @@ typedef enum {
 @interface NSMutableArray (Kitchen)
 /** shuffle current array **/
 - (void) shuffle;
+- (void) reverse;
 @end
 
 @interface NSDictionary (Kitchen)
 /** get an object by a dotted path (example:a.b.c) **/
 - (id) objectForPath:(NSString *) path;
 - (int) intForPath:(NSString *) path;
+- (double) doubleForPath:(NSString *) path;
 - (BOOL) boolForPath:(NSString *) path;
 - (NSString *) stringForPath:(NSString *) path;
 @end
@@ -96,6 +98,7 @@ typedef enum {
 @interface UIColor (Kitchen)
 
 + (UIColor *) kColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
++ (UIColor *) colorWithHexString:(NSString *) hexString;
 
 @end
 

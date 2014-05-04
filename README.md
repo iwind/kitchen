@@ -5,14 +5,14 @@
 ### 构造器
 
 ~~~php
-public function __construct(array $setup);
+$yunba = new Yunba(array $setup);
 ~~~
 参数：
 * array $setup 配置选项，包括server（可选）,port（可选）,appkey,debug（可选）三个选项
 
 ### 初始化
 ~~~php
-public function init($initCallback = null, $recCallback = null);
+$yunba->init($initCallback = null, $recCallback = null);
 ~~~
 参数：
 * callable $initCallback 初始化结果回调函数
@@ -20,7 +20,7 @@ public function init($initCallback = null, $recCallback = null);
 
 ### 连接服务
 ~~~php
-public function connect($callback = null);
+$yunba->connect($callback = null);
 ~~~
 参数
 * callable $callback 连接成功或失败回调函数
@@ -28,14 +28,14 @@ public function connect($callback = null);
 
 ### 断开连接
 ~~~php
-public function disconnect($callback = null);
+$yunba->disconnect($callback = null);
 ~~~
 参数
 * callable $callback 回调函数
 
 ### 触发事件
 ~~~php	
-public function emit($event, array $args, $callback = null);
+$yunba->emit($event, array $args, $callback = null);
 ~~~
 参数：
 * string $event 事件名
@@ -44,7 +44,7 @@ public function emit($event, array $args, $callback = null);
 
 ### 监听事件	
 ~~~php
-public function on($event, $callback);
+$yunba->on($event, $callback);
 ~~~
 参数：
 * string $event 事件名
@@ -52,7 +52,7 @@ public function on($event, $callback);
 
 ### 订阅
 ~~~php
-public function subscribe (array $args, $subscribeCallback = null, $messageCallback = null);
+$yunba->subscribe (array $args, $subscribeCallback = null, $messageCallback = null);
 ~~~
 参数：
 * array $args 参数，包括topic, qos两个选项
@@ -61,7 +61,7 @@ public function subscribe (array $args, $subscribeCallback = null, $messageCallb
 
 ### 取消订阅
 ~~~php
-public function unsubscribe (array $args, $callback = null);
+$yunba->unsubscribe (array $args, $callback = null);
 ~~~
 参数：
 * array $args 参数，包括topic一个选项
@@ -69,7 +69,7 @@ public function unsubscribe (array $args, $callback = null);
 
 ### 发布消息
 ~~~php	
-public function publish (array $args, $callback = null);
+$yunba->publish (array $args, $callback = null);
 ~~~	
 参数：
 * array $args 要发布的消息的内容，包括topic, msg, qos三个选项
@@ -77,7 +77,7 @@ public function publish (array $args, $callback = null);
 
 ### 等待和服务间的通讯
 ~~~php
-public function wait()；
+$yunba->wait()；
 ~~~
 
 ## 使用示例

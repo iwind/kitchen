@@ -11,6 +11,10 @@ public function __construct(array $setup);
 参数：
 * array $setup 配置选项，包括server（可选）,port（可选）,appkey,debug（可选）三个参数
 
+## 初始化
+~~~php
+public function init($initCallback = null, $recCallback = null);
+~~~
 
 /**
 	 * 初始化
@@ -18,38 +22,17 @@ public function __construct(array $setup);
 	 * @param callable $initCallback 初始化结果回调
 	 * @param callable $recCallback 重新连接回调
 	 */
-	public function init($initCallback = null, $recCallback = null) {
-		if (is_callable($initCallback)) {
-			$this->_initCallback = $initCallback;
-		}
-		if (is_callable($recCallback)) {
-			$this->_recCallback = $recCallback; 
-		}
-		
-		$this->on("socketconnectack", array($this, "_initCallbackMethod"));
-		$this->on("connack", array($this, "_connectCallbackMethod"));
-		$this->on("disconnect", array($this, "_reconnectCallbackMethod"));
-		$this->on("error", array($this, "_disconnectCallbackMethod"));
-		$this->on("reconnect", array($this, "_disconnectCallbackMethod"));
-		$this->on("reconnect_failed", array($this, "_disconnectCallbackMethod"));
-		$this->on("suback", array($this,  "_subscribeCallbackMethod"));
-		$this->on("message", array($this, "_messageCallbackMethod"));
-		$this->on("puback", array($this, "_publishCallbackMethod"));
-		$this->on("unsuback", array($this, "_unsubscribeCallbackMethod"));
-		$this->_client->init();
-	}
-	
+
+~~~php
 	/**
 	 * 连接
 	 * 
 	 * @param callable $callback 回调
 	 */
-	public function connect($callback = null) {
-		$this->emit("connect", array(
-			"appkey" => $this->_appKey
-		), $callback);
-	}
+	public function connect($callback = null);
+~~~
 	
+~~~php
 	/**
 	 * 断开连接
 	 * 
@@ -58,7 +41,9 @@ public function __construct(array $setup);
 	public function disconnect($callback = null) {
 		$this->emit("disconn", array(), $callback);
 	}
-	
+~~~
+
+~~~php	
 	/**
 	 * 触发事件
 	 * 
@@ -74,7 +59,9 @@ public function __construct(array $setup);
 		
 		$this->_client->emit($event, $args, null, array($this, "push_callback_" . $this->_callId));
 	}
+~~~
 	
+~~~php
 	/**
 	 * 监听事件
 	 * 
@@ -84,6 +71,9 @@ public function __construct(array $setup);
 	public function on($event, $callback) {
 		$this->_client->on($event, $callback);
 	}
+~~~
+
+~~~php
 	
 	/**
 	 * 订阅
@@ -108,7 +98,9 @@ public function __construct(array $setup);
 			"qos" => $qos	
 		), $subscribeCallback);
 	}
-	
+~~~
+
+~~~php
 	/**
 	 * 取消订阅
 	 * 
@@ -121,7 +113,9 @@ public function __construct(array $setup);
 			"topic" => $channel
 		), $callback);
 	}
-	
+~~~
+
+~~~php	
 	/**
 	 * 发布消息
 	 * 
@@ -138,7 +132,8 @@ public function __construct(array $setup);
 			"qos" => $qos		
 		), $callback);
 	}
-	
+~~~	
+
 	/**
 	 * 等待通讯
 	 */

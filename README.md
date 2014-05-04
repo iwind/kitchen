@@ -8,7 +8,11 @@
 $yunba = new Yunba(array $setup);
 ~~~
 参数：
-* array $setup 配置选项，包括server（可选）,port（可选）,appkey,debug（可选）三个选项
+* array $setup 配置选项，包括：
+   * server（可选） - 服务器域名或IP
+   * port（可选）- 服务器端口
+   * appkey - 应用AppKey字符串
+   * debug（可选）- 是否开启调试模式
 
 ### 初始化
 ~~~php
